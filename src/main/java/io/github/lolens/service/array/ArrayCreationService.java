@@ -40,10 +40,10 @@ public class ArrayCreationService {
     // validator
     validator.validate(stream);
     // parser
-    T[] s = parser.parse(clazz, reader.lines(), converter);
+    T[] rawArray = parser.parse(clazz, reader.lines(), converter);
 
 
-    return NumericArrayWrapper.of(s);
+    return NumericArrayWrapper.of(rawArray);
   }
 
 
