@@ -9,18 +9,37 @@ import java.util.stream.Stream;
 
 public class NumericArrayReader {
 
-  private final Path filePath;
+  private Path path;
+
+  public NumericArrayReader() {
+
+  }
 
   public NumericArrayReader(Path path) {
+    changeFilePath(path);
+  }
+
+  public void changeFilePath(Path path) {
+    checkReadPossibility(path);
+    this.path = path;
+  }
+
+  private void checkPath() {
+    if (path == null) {
+      throw new NumericArrayReaderException("File path is null");
+    }
+  }
+
+  private void checkReadPossibility(Path path) {
     if (!Files.isReadable(path)) {
       throw new NumericArrayReaderException("Specified file does not exist or can't be read for other reasons");
     }
-    filePath = path;
   }
 
   public Stream<String> lines() {
+
     try {
-      BufferedReader br = new BufferedReader(new FileReader(filePath.toFile()));
+      BufferedReader br = new BufferedReader(new FileReader(path.toFile()));
       // opening stream with try-with-resources instantly closes lazily-populated stream after br.lines();
       return br.lines().onClose(() -> {
         try {
@@ -35,7 +54,7 @@ public class NumericArrayReader {
   }
 
   public String readLine() {
-    try (BufferedReader br = new BufferedReader(new FileReader(filePath.toFile()))) {
+    try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
       return br.readLine();
     } catch (IOException e) {
       throw new NumericArrayReaderException("Encountered IOException while reading file", e);

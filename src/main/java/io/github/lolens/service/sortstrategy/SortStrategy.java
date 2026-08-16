@@ -9,7 +9,7 @@ public interface SortStrategy<T extends Number & Comparable<T>> {
 
 
   static <T extends Number & Comparable<T>> SortStrategy<T> bubble() {
-    return new BubbleSortStrategy<>();
+    return new BubbleSortStrategy<T>();
   }
 
   static <T extends Number & Comparable<T>> SortStrategy<T> insertion() {

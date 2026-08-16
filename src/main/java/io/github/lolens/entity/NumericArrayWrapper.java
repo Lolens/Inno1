@@ -1,6 +1,6 @@
 package io.github.lolens.entity;
 
-import io.github.lolens.exception.GenericArrayWrapperException;
+import io.github.lolens.exception.NumericArrayWrapperException;
 
 import java.util.Arrays;
 
@@ -11,9 +11,9 @@ public class NumericArrayWrapper<T extends Number & Comparable<T>> {
     this.array = array;
   }
 
-  public T get(int index) throws GenericArrayWrapperException {
+  public T get(int index) throws NumericArrayWrapperException {
     if (index < 0 || index > array.length - 1) {
-      throw new GenericArrayWrapperException("Index out of bounds");
+      throw new NumericArrayWrapperException("Index out of bounds");
     }
 
     return array[index];

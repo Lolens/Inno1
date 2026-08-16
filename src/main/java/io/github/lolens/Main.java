@@ -1,14 +1,18 @@
 package io.github.lolens;
 
 import io.github.lolens.entity.NumericArrayWrapper;
+import io.github.lolens.parser.NumericArrayParser;
 import io.github.lolens.reader.NumericArrayReader;
+import io.github.lolens.service.array.ArrayCreationService;
 import io.github.lolens.service.sortstrategy.SortService;
 import io.github.lolens.service.sortstrategy.SortStrategy;
 import io.github.lolens.service.sortstrategy.impl.SortServiceImpl;
 import io.github.lolens.service.sortstrategy.impl.BubbleSortStrategy;
+import io.github.lolens.validator.impl.ArrayDataValidatorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 
@@ -28,15 +32,22 @@ public class Main {
 
   public static void main(String[] args) {
 
-    NumericArrayWrapper<Integer> arrayWrapper =
-        NumericArrayWrapper.of(new Integer[]{1, 58, 2, 77, 332, 111, 353, 4693, 11, 44, 55, 677, 9, 0, 12422, 2292});
 
-    SortServiceImpl<Integer> service = new SortServiceImpl<>(new BubbleSortStrategy<Integer>());
+    ArrayCreationService service = new ArrayCreationService(
+        new NumericArrayReader(),
+        new ArrayDataValidatorImpl(),
+        new NumericArrayParser()
+    );
 
-    service.sort(arrayWrapper, SortStrategy.bubble());
+    NumericArrayWrapper<BigInteger> doubleArrayWrapper = service.createFromFile(FILE_PATH, BigInteger.class, BigInteger::new);
 
-    NumericArrayReader arrayParser = new NumericArrayReader(FILE_PATH);
-    arrayParser.lines().forEach(System.out::println);
+    System.out.println(doubleArrayWrapper.toString());
+
+    SortService sortService = new SortServiceImpl();
+    sortService.sort(doubleArrayWrapper, SortStrategy.bubble());
+
+    System.out.println(doubleArrayWrapper);
+
 
 
   }
