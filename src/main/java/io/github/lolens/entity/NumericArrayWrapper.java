@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class NumericArrayWrapper<T extends Number & Comparable<T>> {
   private final T[] array;
 
-  private NumericArrayWrapper(T[] array) {
+  public NumericArrayWrapper(T[] array) {
     this.array = array;
   }
 
