@@ -5,20 +5,20 @@ import io.github.lolens.service.sortstrategy.impl.BubbleSortStrategy;
 import io.github.lolens.service.sortstrategy.impl.InsertionSortStrategy;
 import io.github.lolens.service.sortstrategy.impl.SelectionSortStrategy;
 
-public interface SortStrategy<T extends Number & Comparable<T>> {
+public interface SortStrategy {
 
 
-  static <T extends Number & Comparable<T>> SortStrategy<T> bubble() {
-    return new BubbleSortStrategy<T>();
+  static <T extends Number & Comparable<T>> SortStrategy bubble() {
+    return new BubbleSortStrategy();
   }
 
-  static <T extends Number & Comparable<T>> SortStrategy<T> insertion() {
-    return new InsertionSortStrategy<>();
+  static <T extends Number & Comparable<T>> SortStrategy insertion() {
+    return new InsertionSortStrategy();
   }
 
-  static <T extends Number & Comparable<T>> SortStrategy<T> selection() {
-    return new SelectionSortStrategy<>();
+  static <T extends Number & Comparable<T>> SortStrategy selection() {
+    return new SelectionSortStrategy();
   }
 
-  void sort(NumericArrayWrapper<T> arrayWrapper);
+  <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper);
 }

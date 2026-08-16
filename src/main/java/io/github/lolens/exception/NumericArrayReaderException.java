@@ -1,5 +1,7 @@
 package io.github.lolens.exception;
 
+
+// Streams are used in ArrayReader and Exception cannot be used in lambdas.
 public class NumericArrayReaderException extends RuntimeException {
   public NumericArrayReaderException(String message) {
     super(message);

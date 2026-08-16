@@ -3,10 +3,10 @@ package io.github.lolens.service.sortstrategy.impl;
 import io.github.lolens.entity.NumericArrayWrapper;
 import io.github.lolens.service.sortstrategy.SortStrategy;
 
-public class SelectionSortStrategy<T extends Number & Comparable<T>> implements SortStrategy<T> {
+public class SelectionSortStrategy implements SortStrategy {
 
   @Override
-  public void sort(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
 
     for (int i = 0; i < array.length; i++) {

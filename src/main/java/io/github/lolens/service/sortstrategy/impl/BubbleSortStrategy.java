@@ -5,9 +5,9 @@ import io.github.lolens.service.sortstrategy.SortStrategy;
 
 import java.util.Arrays;
 
-public class BubbleSortStrategy<T extends Number & Comparable<T>> implements SortStrategy<T> {
+public class BubbleSortStrategy implements SortStrategy {
   @Override
-  public void sort(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
 
     for (int i = 0; i < array.length; i++) {

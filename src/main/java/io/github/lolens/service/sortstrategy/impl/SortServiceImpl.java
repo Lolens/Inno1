@@ -6,11 +6,7 @@ import io.github.lolens.service.sortstrategy.SortStrategy;
 
 public class SortServiceImpl implements SortService {
 
-  public SortServiceImpl() {
-
-  }
-
-  public <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper, SortStrategy<T> strategy) {
+  public <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper, SortStrategy strategy) {
     strategy.sort(arrayWrapper);
   }
 

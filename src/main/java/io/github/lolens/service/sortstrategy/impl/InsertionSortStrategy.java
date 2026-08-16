@@ -3,9 +3,9 @@ package io.github.lolens.service.sortstrategy.impl;
 import io.github.lolens.entity.NumericArrayWrapper;
 import io.github.lolens.service.sortstrategy.SortStrategy;
 
-public class InsertionSortStrategy<T extends Number & Comparable<T>> implements SortStrategy<T> {
+public class InsertionSortStrategy implements SortStrategy {
   @Override
-  public void sort(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
 
     for (int i = 1; i < array.length; i++) {

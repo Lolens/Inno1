@@ -1,5 +1,8 @@
 package io.github.lolens.exception;
 
+// Exception should extend RuntimeException because it is thrown when
+// non-recoverable situation happens (input.txt contains invalid data,
+// which should result in immediate program shutdown)
 public class ArrayDataValidatorException extends RuntimeException {
   public ArrayDataValidatorException(String message) {
     super(message);

@@ -9,27 +9,25 @@ import java.util.stream.Stream;
 
 public class ArrayDataValidatorImpl implements ArrayDataValidator {
 
-  // Catches both "1.023,2024.21" and "1,5,12"
-  // Only checks for allowed symbols
-  private static final Pattern ALLOWED_SYMBOLS_PATTERN = Pattern.compile("(?<number>[0-9.]+)|(?<delimiter>,)");
+  // Blank lines do not pass this pattern, so they are omitted in Reader "phase"
+  private static final Pattern ALLOWED_SYMBOLS_PATTERN = Pattern.compile("^[0-9.]+(,[0-9.]+)*$");
   private static final Pattern LEADING_ZERO_PATTERN = Pattern.compile("0\\d+");
 
   @Override
-  public void validate(String line) throws ArrayDataValidatorException {
+  public void validate(String line) {
 
-    Matcher zeroMatcher = LEADING_ZERO_PATTERN.matcher(line);
-    if (zeroMatcher.find()) {
-      throw new ArrayDataValidatorException("Number mustn't have leading zeros. Pos: " +  zeroMatcher.start());
-    }
-
-    if (ALLOWED_SYMBOLS_PATTERN.matcher(line).matches()) {
+    if (!ALLOWED_SYMBOLS_PATTERN.matcher(line).matches()) {
       throw new ArrayDataValidatorException("Bad input (stream)");
     }
 
+    Matcher zeroMatcher = LEADING_ZERO_PATTERN.matcher(line);
+    if (zeroMatcher.find()) {
+      throw new ArrayDataValidatorException("Number mustn't have leading zeros. Pos: " + zeroMatcher.start());
+    }
   }
 
   @Override
-  public void validate(Stream<String> stream) throws ArrayDataValidatorException {
+  public void validate(Stream<String> stream) {
     stream.forEach(this::validate);
   }
 }

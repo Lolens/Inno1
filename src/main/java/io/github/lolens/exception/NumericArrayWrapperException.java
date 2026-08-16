@@ -1,6 +1,6 @@
 package io.github.lolens.exception;
 
-public class NumericArrayWrapperException extends Exception {
+public class NumericArrayWrapperException extends RuntimeException {
 
   public NumericArrayWrapperException(String message) {
     super(message);

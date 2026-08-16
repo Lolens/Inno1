@@ -20,7 +20,7 @@ public class NumericArrayParser {
 
   // pseudo-regex pattern: (1+ digit -> optional period -> 1+ digit)
   // works on lines with any delimiter present
-  private static Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("((\\d+\\.?\\d+)|(\\d+))");
+  private static final Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("((\\d+\\.?\\d+)|(\\d+))");
 
   public <T extends Number & Comparable<T>> T[] parse(Class<T> clazz, Stream<String> stream, Function<String, T> converter) {
     List<T> list = new ArrayList<>();
@@ -38,8 +38,19 @@ public class NumericArrayParser {
     return array;
   }
 
-  public <T extends Number & Comparable<T>> T[] parse(Class<T> clazz, String line) {
-    throw new IllegalStateException("Not implemented");
+  public <T extends Number & Comparable<T>> T[] parse(Class<T> clazz, String line, Function<String, T> converter) {
+    List<T> list = new ArrayList<>();
+
+    Matcher matcher = DECIMAL_NUMBER_PATTERN.matcher(line);
+    while (matcher.find()) {
+      list.add(converter.apply(matcher.group()));
+    }
+
+    // generic type cannot be used in list.toArray(new T[0]) so it is needed to instantiate it by reflection
+    @SuppressWarnings("unchecked")
+    T[] array = list.toArray((T[]) Array.newInstance(clazz, list.size()));
+
+    return array;
   }
 
 

@@ -6,8 +6,8 @@ import java.util.stream.Stream;
 
 public interface ArrayDataValidator {
 
-  void validate(String line) throws ArrayDataValidatorException;
+  void validate(String line);
 
-  void validate(Stream<String> stream) throws ArrayDataValidatorException;
+  void validate(Stream<String> stream);
 
 }

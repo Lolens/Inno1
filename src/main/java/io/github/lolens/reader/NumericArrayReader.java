@@ -15,11 +15,7 @@ public class NumericArrayReader {
 
   }
 
-  public NumericArrayReader(Path path) {
-    changeFilePath(path);
-  }
-
-  public void changeFilePath(Path path) {
+  public void changeFilePath(Path path) throws FileNotFoundException {
     checkReadPossibility(path);
     this.path = path;
   }
@@ -37,11 +33,14 @@ public class NumericArrayReader {
   }
 
   public Stream<String> lines() {
+    checkPath();
 
     try {
       BufferedReader br = new BufferedReader(new FileReader(path.toFile()));
       // opening stream with try-with-resources instantly closes lazily-populated stream after br.lines();
-      return br.lines().onClose(() -> {
+      return br.lines()
+          .filter(s -> !s.isBlank()) // drop blank lines
+          .onClose(() -> {
         try {
           br.close();
         } catch (IOException e) {
@@ -53,13 +52,6 @@ public class NumericArrayReader {
     }
   }
 
-  public String readLine() {
-    try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
-      return br.readLine();
-    } catch (IOException e) {
-      throw new NumericArrayReaderException("Encountered IOException while reading file", e);
-    }
-  }
 
 
 }

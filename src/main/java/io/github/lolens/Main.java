@@ -12,6 +12,7 @@ import io.github.lolens.validator.impl.ArrayDataValidatorImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -32,23 +33,26 @@ public class Main {
 
   public static void main(String[] args) {
 
-
-    ArrayCreationService service = new ArrayCreationService(
+    SortService sortService = new SortServiceImpl();
+    ArrayCreationService creationService = new ArrayCreationService(
         new NumericArrayReader(),
         new ArrayDataValidatorImpl(),
         new NumericArrayParser()
     );
 
-    NumericArrayWrapper<BigInteger> doubleArrayWrapper = service.createFromFile(FILE_PATH, BigInteger.class, BigInteger::new);
+    NumericArrayWrapper<BigInteger> arrayWrapper = null;
 
-    System.out.println(doubleArrayWrapper.toString());
+    try {
+      arrayWrapper = creationService.createFromFile(FILE_PATH, BigInteger.class, BigInteger::new);
+    } catch (FileNotFoundException e) {
+      logger.warn("Specified file path does not contain a file");
+    }
 
-    SortService sortService = new SortServiceImpl();
-    sortService.sort(doubleArrayWrapper, SortStrategy.bubble());
+    logger.info("ArrayWrapper before sorting: {}", arrayWrapper);
 
-    System.out.println(doubleArrayWrapper);
+    sortService.sort(arrayWrapper, SortStrategy.bubble());
 
-
+    logger.info("ArrayWrapper after sorting: {}", arrayWrapper);
 
   }
 

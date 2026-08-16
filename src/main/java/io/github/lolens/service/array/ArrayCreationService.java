@@ -8,6 +8,7 @@ import io.github.lolens.validator.ArrayDataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -32,7 +33,7 @@ public class ArrayCreationService {
 
   public <T extends Number & Comparable<T>> NumericArrayWrapper<T> createFromFile(
       Path filePath, Class<T> clazz, Function<String, T> converter
-  ) {
+  ) throws FileNotFoundException {
     // reader
     reader.changeFilePath(filePath);
     Stream<String> stream = reader.lines();

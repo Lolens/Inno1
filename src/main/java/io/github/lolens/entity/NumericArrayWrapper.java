@@ -78,7 +78,7 @@ public class NumericArrayWrapper<T extends Number & Comparable<T>> {
   private boolean areEqualInside(NumericArrayWrapper<T> wrapper1, NumericArrayWrapper<T> wrapper2) {
     T[] current = wrapper1.array;
     T[] other = wrapper2.array;
-    // Check if the same object
+    // Check if the same object (in case of two nulls doesn't proceed)
     if (current == other) return true;
 
     // Check if any is null
