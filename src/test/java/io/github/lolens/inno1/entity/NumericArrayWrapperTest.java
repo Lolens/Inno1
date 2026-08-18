@@ -15,9 +15,13 @@ public class NumericArrayWrapperTest {
   @BeforeEach
   void setUp() {
     arrayContents = new Integer[] {1, 5, 2, 53, 1242, 1, 25, 1254, 124, 12};
-    arrayWrapper = NumericArrayWrapper.of(arrayContents);
+    arrayWrapper = NumericArrayWrapper.Factory.create(arrayContents);
   }
 
+
+  // Factory method is used because constructor is private and
+  // I don't want to use reflection to instantiate NumericArrayWrapper for tests
+  // If constructor is open its usage becomes a recommendation and not a must
 
   @Test
   void shouldLengthReturnInnerArrayLength() {
@@ -30,13 +34,13 @@ public class NumericArrayWrapperTest {
 
     @Test
     void shouldWrapperCopyConstructorCopyInnerArray() {
-      NumericArrayWrapper<Integer> copy = new NumericArrayWrapper<>(arrayWrapper);
+      NumericArrayWrapper<Integer> copy = NumericArrayWrapper.Factory.create(arrayWrapper);
       assertNotSame(copy.getArray(), arrayWrapper.getArray());
     }
 
     @Test
     void shouldArrayCopyConstructorCopyInnerArray() {
-      NumericArrayWrapper<Integer> copy = new NumericArrayWrapper<>(arrayContents);
+      NumericArrayWrapper<Integer> copy = NumericArrayWrapper.Factory.create(arrayContents);
       assertNotSame(copy.getArray(), arrayWrapper.getArray());
     }
 
@@ -99,20 +103,20 @@ public class NumericArrayWrapperTest {
       @Test
       void shouldNotBeEqualOnSameInnerArrayContents() {
         Integer[] arr = new Integer[]{1, 2, 3};
-        NumericArrayWrapper<Integer> wrapper = new NumericArrayWrapper<>(new Integer[]{1, 2, 3});
+        NumericArrayWrapper<Integer> wrapper = NumericArrayWrapper.Factory.create(new Integer[]{1, 2, 3});
         assertNotEquals(arr, wrapper);
       }
 
       @Test
       void shouldNotBeEqualOnSameInnerArrayReference() {
         Integer[] arr = new Integer[]{1, 2, 3};
-        NumericArrayWrapper<Integer> wrapper = new NumericArrayWrapper<>(arr);
+        NumericArrayWrapper<Integer> wrapper = NumericArrayWrapper.Factory.create(arr);
         assertNotEquals(arr, wrapper);
       }
 
       @Test
       void shouldNotBeEqualOnDifferentLength() {
-        NumericArrayWrapper<Integer> wrapper = new NumericArrayWrapper<>(new Integer[]{1, 2, 3});
+        NumericArrayWrapper<Integer> wrapper = NumericArrayWrapper.Factory.create(new Integer[]{1, 2, 3});
         assertNotEquals(wrapper, arrayWrapper);
       }
 

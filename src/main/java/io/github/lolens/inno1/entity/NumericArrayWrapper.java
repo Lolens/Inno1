@@ -1,6 +1,7 @@
 package io.github.lolens.inno1.entity;
 
 import io.github.lolens.inno1.exception.NumericArrayWrapperException;
+import io.github.lolens.inno1.util.IdentifierCounter;
 
 import java.util.Arrays;
 
@@ -11,25 +12,52 @@ import java.util.Arrays;
  * @param <T> the type inner array will be using
  */
 public class NumericArrayWrapper<T extends Number & Comparable<T>> {
-  private final T[] array;
+  private static final IdentifierCounter counter = IdentifierCounter.zero();
 
-  /**
-   * Shallow copy constructor
-   **/
-  public NumericArrayWrapper(T[] array) {
+  // Needed to store all wrappers in a single repository. Because Java has type-erasure
+  private final Class<T> type;
+
+  private final T[] array;
+  private final long id;
+
+  /** Constructor used to create a copy with new id **/
+  private NumericArrayWrapper(long id, T[] array) {
     // Although BigInteger/Double/Long... etc... are immutable,
     // <T extends Number & Comparable<T>> does not guarantee type immutability
     // and java doesn't have a way of making a deep copy so we make a shallow copy
+    this.id = id;
     this.array = Arrays.copyOf(array, array.length);
+    //noinspection unchecked
+    this.type = (Class<T>) array.getClass().getComponentType();
   }
 
-  public NumericArrayWrapper(NumericArrayWrapper<T> wrapper) {
+  /** Constructor used to create a copy with new id **/
+  private NumericArrayWrapper(long id, NumericArrayWrapper<T> wrapper) {
+    this.id = id;
     this.array = Arrays.copyOf(wrapper.array, wrapper.array.length);
+    //noinspection unchecked
+    this.type = (Class<T>) wrapper.array.getClass().getComponentType();
+  }
+
+  /** Constructor used to create a copy  **/
+  private NumericArrayWrapper(NumericArrayWrapper<T> wrapper) {
+    this.id = wrapper.getId();
+    this.array = Arrays.copyOf(wrapper.array, wrapper.array.length);
+    //noinspection unchecked
+    this.type = (Class<T>) wrapper.array.getClass().getComponentType();
   }
 
   public T get(int index) throws NumericArrayWrapperException {
     checkOutOfBounds(index);
     return array[index];
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public Class<T> getType() {
+    return type;
   }
 
   /**
@@ -41,7 +69,7 @@ public class NumericArrayWrapper<T extends Number & Comparable<T>> {
     checkOutOfBounds(index);
     T[] newArray = Arrays.copyOf(array, array.length);
     newArray[index] = value;
-    return new NumericArrayWrapper<>(newArray);
+    return new NumericArrayWrapper<>(id, newArray);
   }
 
   private void checkOutOfBounds(int index) {
@@ -75,15 +103,12 @@ public class NumericArrayWrapper<T extends Number & Comparable<T>> {
 
   @Override
   public String toString() {
-    StringBuilder builder = new StringBuilder();
-    builder.append("GenericArrayWrapper{");
-    builder.append("array=");
-    builder.append(Arrays.toString(array));
-    builder.append("}");
-    // javac should take care of these inefficient operations by itself,
-    // so it is not necessary to use
-    // StringBuilder/StringJoiner on situations like that
-    return builder.toString();
+    final StringBuilder sb = new StringBuilder("NumericArrayWrapper{");
+    sb.append("type=").append(type);
+    sb.append(", array=").append(Arrays.toString(array));
+    sb.append(", id=").append(id);
+    sb.append('}');
+    return sb.toString();
   }
 
   // basically Arrays.hashCode() implementation
@@ -119,6 +144,8 @@ public class NumericArrayWrapper<T extends Number & Comparable<T>> {
   }
 
   private boolean areEqualInside(NumericArrayWrapper<T> wrapper1, NumericArrayWrapper<T> wrapper2) {
+    if (wrapper1.id != wrapper2.id) return false;
+
     T[] current = wrapper1.array;
     T[] other = wrapper2.array;
     // Check if the same object (in case of two nulls doesn't proceed)
@@ -142,14 +169,25 @@ public class NumericArrayWrapper<T extends Number & Comparable<T>> {
     return true;
   }
 
+
   /// STATIC FACTORY METHOD ///
 
-  public static <T extends Number & Comparable<T>> NumericArrayWrapper<T> of(NumericArrayWrapper<T> arrayWrapper) {
-    return new NumericArrayWrapper<>(arrayWrapper);
-  }
+  public static class Factory {
 
-  public static <T extends Number & Comparable<T>> NumericArrayWrapper<T> of(T[] array) {
-    return new NumericArrayWrapper<>(array);
+    /** Factory method used to create a full copy  **/
+    public static <T extends Number & Comparable<T>> NumericArrayWrapper<T> create(NumericArrayWrapper<T> arrayWrapper) {
+      return new NumericArrayWrapper<>(arrayWrapper);
+    }
+
+    /** Factory method used to create a full copy with new id **/
+    public static <T extends Number & Comparable<T>> NumericArrayWrapper<T> create(long id, NumericArrayWrapper<T> arrayWrapper) {
+      return new NumericArrayWrapper<>(id, arrayWrapper);
+    }
+
+    /** Factory method used to create new NumericArrayWrapper **/
+    public static <T extends Number & Comparable<T>> NumericArrayWrapper<T> create(T[] array) {
+      return new NumericArrayWrapper<>(counter.getAndIncrement(), array);
+    }
   }
 
 }

@@ -25,7 +25,7 @@ public class SelectionSortStrategy implements SortStrategy {
       array[array.length - i - 1] = max;
     }
 
-    return NumericArrayWrapper.of(array);
+    return NumericArrayWrapper.Factory.create(array);
   }
 
 

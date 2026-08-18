@@ -17,6 +17,6 @@ public class BubbleSortStrategy implements SortStrategy {
         }
       }
     }
-    return NumericArrayWrapper.of(array);
+    return NumericArrayWrapper.Factory.create(array);
   }
 }

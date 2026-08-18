@@ -1,0 +1,114 @@
+package io.github.lolens.inno1.service.array.impl;
+
+import io.github.lolens.inno1.entity.NumericArrayWrapper;
+import io.github.lolens.inno1.parser.NumericArrayParser;
+import io.github.lolens.inno1.reader.NumericArrayReader;
+import io.github.lolens.inno1.repository.arraywrapper.Repository;
+import io.github.lolens.inno1.service.array.ArrayService;
+import io.github.lolens.inno1.validator.ArrayDataValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+public class ArrayServiceImpl implements ArrayService {
+
+  private static final Logger logger = LoggerFactory.getLogger(ArrayServiceImpl.class);
+
+  private final Repository<Long, NumericArrayWrapper<?>> repository;
+  private final NumericArrayReader reader;
+  private final ArrayDataValidator validator;
+  private final NumericArrayParser parser;
+
+  public ArrayServiceImpl(
+      Repository<Long, NumericArrayWrapper<?>> repository,
+      NumericArrayReader reader,
+      ArrayDataValidator validator,
+      NumericArrayParser parser
+  ) {
+    this.repository = repository;
+    this.reader = reader;
+    this.parser = parser;
+    this.validator = validator;
+  }
+
+  @Override
+  public <T extends Number & Comparable<T>> NumericArrayWrapper<T> createFromFile(
+      Path filePath, Class<T> clazz, Function<String, T> converter
+  ) throws FileNotFoundException {
+    // reader
+    reader.changeFilePath(filePath);
+
+    // validator
+    try (Stream<String> stream = reader.stream()) {
+      validator.validate(stream);
+    }
+
+    // parser
+    T[] rawArray;
+    try (Stream<String> stream = reader.stream()) {
+      rawArray = parser.parse(clazz, stream, converter);
+    }
+
+    return NumericArrayWrapper.Factory.create(rawArray);
+  }
+
+  // Repository
+
+  @Override
+  public <T extends Number & Comparable<T>> NumericArrayWrapper<?> persist(NumericArrayWrapper<T> arrayWrapper) {
+    return repository.save(arrayWrapper);
+  }
+
+  @Override
+  public void delete(long id) {
+    repository.delete(id);
+  }
+
+  @Override
+  public Optional<NumericArrayWrapper<?>> get(long id) {
+    return repository.findById(id);
+  }
+
+  @Override
+  public boolean isExists(long id) {
+    return repository.exists(id);
+  }
+
+  @Override
+  public <T extends Number & Comparable<T>> Optional<NumericArrayWrapper<T>> get(long id, Class<T> expectedType) {
+    //noinspection unchecked
+    return repository.findById(id)
+        .filter(wrapper -> wrapper.getType().equals(expectedType))
+        .map(wrapper -> (NumericArrayWrapper<T>) wrapper);
+  }
+
+  @Override
+  public <T extends Number & Comparable<T>> Optional<NumericArrayWrapper<T>> get(NumericArrayWrapper<T> arrayWrapper) {
+    //noinspection unchecked
+    return repository.findById(arrayWrapper.getId())
+        .filter(wrapper -> wrapper.getType().equals(arrayWrapper.getType()))
+        .map(wrapper -> (NumericArrayWrapper<T>) wrapper);
+  }
+
+  @Override
+  public List<NumericArrayWrapper<?>> getAll() {
+    return repository.findAll();
+  }
+
+  @Override
+  public <T extends Number & Comparable<T>> List<NumericArrayWrapper<T>> getAll(Class<T> clazz) {
+    //noinspection unchecked
+    return repository.findAll().stream()
+        .filter(wrapper -> wrapper.getType().equals(clazz))
+        .map(wrapper -> (NumericArrayWrapper<T>) wrapper)
+        .toList();
+  }
+
+}

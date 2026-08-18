@@ -36,13 +36,17 @@ public class SortServiceImplTest {
     }
   }
 
-  // Test case scenarios are done using AI
+  // Test case scenarios are done using AI.
+
+  // Factory method is used because constructor is private and
+  // I don't want to use reflection to instantiate NumericArrayWrapper for tests
+  // If constructor is open its usage becomes a recommendation and not a must
 
   @Test
   void emptyArray() {
     Integer[] wrapperInnerArray = new Integer[]{};
     Integer[] resultToCompare = new Integer[]{};
-    arrayWrapper = new NumericArrayWrapper<>(wrapperInnerArray);
+    arrayWrapper = NumericArrayWrapper.Factory.create(wrapperInnerArray);
     sortWithEach(arrayWrapper, resultToCompare);
   }
 
@@ -50,7 +54,7 @@ public class SortServiceImplTest {
   void singleElement() {
     Integer[] wrapperInnerArray = new Integer[]{5};
     Integer[] resultToCompare = new Integer[]{5};
-    arrayWrapper = new NumericArrayWrapper<>(wrapperInnerArray);
+    arrayWrapper = NumericArrayWrapper.Factory.create(wrapperInnerArray);
     sortWithEach(arrayWrapper, resultToCompare);
   }
 
@@ -58,7 +62,7 @@ public class SortServiceImplTest {
   void alreadySorted() {
     Integer[] wrapperInnerArray = new Integer[]{1, 2, 3};
     Integer[] resultToCompare = new Integer[]{1, 2, 3};
-    arrayWrapper = new NumericArrayWrapper<>(wrapperInnerArray);
+    arrayWrapper = NumericArrayWrapper.Factory.create(wrapperInnerArray);
     sortWithEach(arrayWrapper, resultToCompare);
   }
 
@@ -66,7 +70,7 @@ public class SortServiceImplTest {
   void reverseSorted() {
     Integer[] wrapperInnerArray = new Integer[]{3, 2, 1};
     Integer[] resultToCompare = new Integer[]{1, 2, 3};
-    arrayWrapper = new NumericArrayWrapper<>(wrapperInnerArray);
+    arrayWrapper = NumericArrayWrapper.Factory.create(wrapperInnerArray);
     sortWithEach(arrayWrapper, resultToCompare);
   }
 
@@ -74,7 +78,7 @@ public class SortServiceImplTest {
   void duplicates() {
     Integer[] wrapperInnerArray = new Integer[]{2, 1, 3, 1, 2};
     Integer[] resultToCompare = new Integer[]{1, 1, 2, 2, 3};
-    arrayWrapper = new NumericArrayWrapper<>(wrapperInnerArray);
+    arrayWrapper = NumericArrayWrapper.Factory.create(wrapperInnerArray);
     sortWithEach(arrayWrapper, resultToCompare);
   }
 
@@ -82,7 +86,7 @@ public class SortServiceImplTest {
   void allSame() {
     Integer[] wrapperInnerArray = new Integer[]{7, 7, 7};
     Integer[] resultToCompare = new Integer[]{7, 7, 7};
-    arrayWrapper = new NumericArrayWrapper<>(wrapperInnerArray);
+    arrayWrapper = NumericArrayWrapper.Factory.create(wrapperInnerArray);
     sortWithEach(arrayWrapper, resultToCompare);
   }
 
@@ -90,7 +94,7 @@ public class SortServiceImplTest {
   void negativeNumbers() {
     Integer[] wrapperInnerArray = new Integer[]{2, -1, -3, 0};
     Integer[] resultToCompare = new Integer[]{-3, -1, 0, 2};
-    arrayWrapper = new NumericArrayWrapper<>(wrapperInnerArray);
+    arrayWrapper = NumericArrayWrapper.Factory.create(wrapperInnerArray);
     sortWithEach(arrayWrapper, resultToCompare);
   }
 }

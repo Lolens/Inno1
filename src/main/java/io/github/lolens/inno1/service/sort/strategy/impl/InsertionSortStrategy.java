@@ -18,7 +18,7 @@ public class InsertionSortStrategy implements SortStrategy {
       }
       array[j + 1] = key;
     }
-    return NumericArrayWrapper.of(array);
+    return NumericArrayWrapper.Factory.create(array);
   }
 
 }

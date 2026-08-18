@@ -22,7 +22,7 @@ public class MathOperationServiceImplTest {
   void setUp() {
     primitiveContents = new double[] {1.0, 5.0, 2.0, 53.0, 1242.0, 1.0, 25.0, 1254.0, 124.0, 12.0};
     wrapperContents = new Double[] {1.0, 5.0, 2.0, 53.0, 1242.0, 1.0, 25.0, 1254.0, 124.0, 12.0};
-    arrayWrapper = NumericArrayWrapper.of(wrapperContents);
+    arrayWrapper = NumericArrayWrapper.Factory.create(wrapperContents);
   }
 
   @Test

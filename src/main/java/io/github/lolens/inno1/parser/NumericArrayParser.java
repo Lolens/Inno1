@@ -34,6 +34,21 @@ public class NumericArrayParser {
     return array;
   }
 
+  public <T extends Number & Comparable<T>> T[] parse(Class<T> clazz, String line, Function<String, T> converter) {
+    List<T> list = new ArrayList<>();
+
+    Matcher matcher = NUMBER_PATTERN.matcher(line);
+    while (matcher.find()) {
+      list.add(converter.apply(matcher.group()));
+    }
+
+    // generic type cannot be used in list.toArray(new T[0]) so it is needed to instantiate it by reflection
+    @SuppressWarnings("unchecked")
+    T[] array = list.toArray((T[]) Array.newInstance(clazz, list.size()));
+
+    return array;
+  }
+
   public <T extends Number & Comparable<T>> T[] parse(Class<T> clazz, List<String> list, Function<String, T> converter) {
     List<T> result = new ArrayList<>();
 
@@ -47,21 +62,6 @@ public class NumericArrayParser {
     // generic type cannot be used in result.toArray(new T[0]) so it is needed to instantiate it by reflection
     @SuppressWarnings("unchecked")
     T[] array = result.toArray((T[]) Array.newInstance(clazz, result.size()));
-
-    return array;
-  }
-
-  public <T extends Number & Comparable<T>> T[] parse(Class<T> clazz, String line, Function<String, T> converter) {
-    List<T> list = new ArrayList<>();
-
-    Matcher matcher = NUMBER_PATTERN.matcher(line);
-    while (matcher.find()) {
-      list.add(converter.apply(matcher.group()));
-    }
-
-    // generic type cannot be used in list.toArray(new T[0]) so it is needed to instantiate it by reflection
-    @SuppressWarnings("unchecked")
-    T[] array = list.toArray((T[]) Array.newInstance(clazz, list.size()));
 
     return array;
   }

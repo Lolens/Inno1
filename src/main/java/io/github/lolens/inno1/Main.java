@@ -3,7 +3,8 @@ package io.github.lolens.inno1;
 import io.github.lolens.inno1.entity.NumericArrayWrapper;
 import io.github.lolens.inno1.parser.NumericArrayParser;
 import io.github.lolens.inno1.reader.NumericArrayReader;
-import io.github.lolens.inno1.service.array.impl.ArrayCreationServiceImpl;
+import io.github.lolens.inno1.repository.arraywrapper.impl.ArrayWrapperRepositoryImpl;
+import io.github.lolens.inno1.service.array.impl.ArrayServiceImpl;
 import io.github.lolens.inno1.service.math.MathOperationService;
 import io.github.lolens.inno1.service.math.impl.MathOperationServiceImpl;
 import io.github.lolens.inno1.service.sort.SortService;
@@ -15,8 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.math.BigInteger;
-import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class Main {
 
@@ -25,10 +27,14 @@ public class Main {
 
   static {
     try {
-      FILE_PATH = Path.of(Main.class.getClassLoader().getResource("input.txt").toURI());
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+      URL fileURL = Main.class.getClassLoader().getResource("input.txt");
+      if (fileURL == null) throw new FileNotFoundException("Specified file is null.");
+      FILE_PATH = Path.of(fileURL.toURI());
+    } catch (Exception e) {
+      // If file can't be used program should stop execution as further actions cannot be done without a data source
+      throw new RuntimeException("Failed to initialize FILE_PATH", e);
     }
+
   }
 
 
@@ -36,7 +42,8 @@ public class Main {
 
     // Service instantiation
     SortService sortService = new SortServiceImpl();
-    ArrayCreationServiceImpl creationService = new ArrayCreationServiceImpl(
+    ArrayServiceImpl arrayService = new ArrayServiceImpl(
+        new ArrayWrapperRepositoryImpl(),
         new NumericArrayReader(),
         new ArrayDataValidatorImpl(),
         new NumericArrayParser()
@@ -46,30 +53,38 @@ public class Main {
 
     // ArrayWrapper creation
     try {
-      arrayWrapper = creationService.createFromFile(FILE_PATH, BigInteger.class, BigInteger::new);
-
-
+      arrayWrapper = arrayService.createFromFile(FILE_PATH, BigInteger.class, BigInteger::new);
     } catch (FileNotFoundException e) {
-      logger.warn("Specified file path does not contain a file");
+      logger.error("Specified file path ({}) does not contain a file. Program can't proceed execution", FILE_PATH);
+      System.exit(1);
     }
 
     // Sorting
     logger.info("ArrayWrapper before sorting: {}", arrayWrapper);
-
     NumericArrayWrapper<BigInteger> sorted = sortService.sort(arrayWrapper, SortStrategy.bubble());
-
     logger.info("ArrayWrapper after sorting: {}", sorted);
 
     // Math service
     MathOperationService mathService = new MathOperationServiceImpl();
 
-    // Optional should always be present, so we get() it without isPresent()
-    logger.info("ArrayWrapper max: {}", mathService.max(arrayWrapper).get());
-    logger.info("ArrayWrapper min: {}", mathService.min(arrayWrapper).get());
-    logger.info("ArrayWrapper average: {}", mathService.average(arrayWrapper).get());
-    logger.info("ArrayWrapper sum: {}", mathService.sum(arrayWrapper).get());
 
+    logResult(mathService.max(arrayWrapper), "max");
+    logResult(mathService.min(arrayWrapper), "min");
+    logResult(mathService.average(arrayWrapper), "average");
+    logResult(mathService.sum(arrayWrapper), "sum");
 
+    arrayService.persist(arrayWrapper);
+
+    logger.info("Persists: {}", arrayService.isExists(0));
+    logger.info(arrayService.getAll(Integer.class).toString());
+
+  }
+
+  private static <T> void logResult(Optional<T> result, String operationName) {
+    result.ifPresentOrElse(
+        value -> logger.info("ArrayWrapper {}: {}", operationName, value),
+        () -> logger.info("ArrayWrapper {} is not present", operationName)
+    );
   }
 
 }
