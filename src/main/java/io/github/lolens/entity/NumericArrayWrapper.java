@@ -2,29 +2,73 @@ package io.github.lolens.entity;
 
 import io.github.lolens.exception.NumericArrayWrapperException;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
+
+/**
+ * Immutable generic array wrapper that is used to allow mathematical operations
+ * that are bound to be used on comparable number objects
+ * @param <T> the type inner array will be using
+ */
 public class NumericArrayWrapper<T extends Number & Comparable<T>> {
   private final T[] array;
 
+  /**
+   * Shallow copy constructor
+   **/
   public NumericArrayWrapper(T[] array) {
-    this.array = array;
+    // Although BigInteger/Double/Long... etc... are immutable,
+    // <T extends Number & Comparable<T>> does not guarantee type immutability
+    // and java doesn't have a way of making a deep copy so we make a shallow copy
+    this.array = Arrays.copyOf(array, array.length);
+  }
+
+  public NumericArrayWrapper(NumericArrayWrapper<T> wrapper) {
+    this.array = Arrays.copyOf(wrapper.array, wrapper.array.length);
   }
 
   public T get(int index) throws NumericArrayWrapperException {
-    if (index < 0 || index > array.length - 1) {
-      throw new NumericArrayWrapperException("Index out of bounds");
-    }
-
+    checkOutOfBounds(index);
     return array[index];
   }
 
-  public void set(int index, T value) {
-    array[index] = value;
+  /**
+   * @param index element index
+   * @param value element value
+   * @return immutable copy with element changed
+   */
+  public NumericArrayWrapper<T> withValue(int index, T value) {
+    checkOutOfBounds(index);
+    T[] newArray = Arrays.copyOf(array, array.length);
+    newArray[index] = value;
+    return new NumericArrayWrapper<>(newArray);
   }
 
+  private void checkOutOfBounds(int index) {
+    if (index < 0 || index > array.length - 1) {
+      throw new NumericArrayWrapperException("Index out of bounds");
+    }
+  }
+
+  /**
+   * @return shallow copy of underlying array
+   **/
   public T[] getArray() {
-    return this.array;
+    return Arrays.copyOf(array, array.length);
+  }
+
+  public int[] getIntArray() {
+    return Arrays.stream(array).mapToInt(Number::intValue).toArray();
+  }
+
+  public double[] getDoubleArray() {
+    return Arrays.stream(array).mapToDouble(Number::doubleValue).toArray();
+  }
+
+  public long[] getLongArray() {
+    return Arrays.stream(array).mapToLong(Number::longValue).toArray();
   }
 
   public int length() {
@@ -39,7 +83,8 @@ public class NumericArrayWrapper<T extends Number & Comparable<T>> {
     builder.append(Arrays.toString(array));
     builder.append("}");
     // javac should take care of these inefficient operations by itself,
-    // so it is not necessary to do so
+    // so it is not necessary to use
+    // StringBuilder/StringJoiner on situations like that
     return builder.toString();
   }
 
@@ -100,6 +145,10 @@ public class NumericArrayWrapper<T extends Number & Comparable<T>> {
   }
 
   /// STATIC FACTORY METHOD ///
+
+  public static <T extends Number & Comparable<T>> NumericArrayWrapper<T> of(NumericArrayWrapper<T> arrayWrapper) {
+    return new NumericArrayWrapper<>(arrayWrapper);
+  }
 
   public static <T extends Number & Comparable<T>> NumericArrayWrapper<T> of(T[] array) {
     return new NumericArrayWrapper<>(array);

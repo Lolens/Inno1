@@ -1,9 +1,9 @@
-package io.github.lolens.service.sortstrategy;
+package io.github.lolens.service.sort.strategy;
 
 import io.github.lolens.entity.NumericArrayWrapper;
-import io.github.lolens.service.sortstrategy.impl.BubbleSortStrategy;
-import io.github.lolens.service.sortstrategy.impl.InsertionSortStrategy;
-import io.github.lolens.service.sortstrategy.impl.SelectionSortStrategy;
+import io.github.lolens.service.sort.strategy.impl.BubbleSortStrategy;
+import io.github.lolens.service.sort.strategy.impl.InsertionSortStrategy;
+import io.github.lolens.service.sort.strategy.impl.SelectionSortStrategy;
 
 public interface SortStrategy {
 
@@ -20,5 +20,5 @@ public interface SortStrategy {
     return new SelectionSortStrategy();
   }
 
-  <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper);
+  <T extends Number & Comparable<T>> NumericArrayWrapper<T> sort(NumericArrayWrapper<T> arrayWrapper);
 }

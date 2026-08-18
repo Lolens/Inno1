@@ -1,6 +1,5 @@
-package io.github.lolens.service.array;
+package io.github.lolens.service.array.impl;
 
-import io.github.lolens.Main;
 import io.github.lolens.entity.NumericArrayWrapper;
 import io.github.lolens.parser.NumericArrayParser;
 import io.github.lolens.reader.NumericArrayReader;
@@ -13,15 +12,15 @@ import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class ArrayCreationService {
+public class ArrayCreationServiceImpl implements ArrayCreationService {
 
-  private static final Logger logger = LoggerFactory.getLogger(ArrayCreationService.class);
+  private static final Logger logger = LoggerFactory.getLogger(ArrayCreationServiceImpl.class);
 
   private final NumericArrayReader reader;
   private final ArrayDataValidator validator;
   private final NumericArrayParser parser;
 
-  public ArrayCreationService(
+  public ArrayCreationServiceImpl(
       NumericArrayReader reader,
       ArrayDataValidator validator,
       NumericArrayParser parser
@@ -36,12 +35,17 @@ public class ArrayCreationService {
   ) throws FileNotFoundException {
     // reader
     reader.changeFilePath(filePath);
-    Stream<String> stream = reader.lines();
-    // validator
-    validator.validate(stream);
-    // parser
-    T[] rawArray = parser.parse(clazz, reader.lines(), converter);
 
+    // validator
+    try (Stream<String> stream = reader.stream()) {
+      validator.validate(stream);
+    }
+
+    // parser
+    T[] rawArray;
+    try (Stream<String> stream = reader.stream()) {
+      rawArray = parser.parse(clazz, stream, converter);
+    }
 
     return NumericArrayWrapper.of(rawArray);
   }

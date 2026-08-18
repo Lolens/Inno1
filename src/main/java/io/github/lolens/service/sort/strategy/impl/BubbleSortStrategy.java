@@ -1,13 +1,11 @@
-package io.github.lolens.service.sortstrategy.impl;
+package io.github.lolens.service.sort.strategy.impl;
 
 import io.github.lolens.entity.NumericArrayWrapper;
-import io.github.lolens.service.sortstrategy.SortStrategy;
-
-import java.util.Arrays;
+import io.github.lolens.service.sort.strategy.SortStrategy;
 
 public class BubbleSortStrategy implements SortStrategy {
   @Override
-  public <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> NumericArrayWrapper<T> sort(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
 
     for (int i = 0; i < array.length; i++) {
@@ -17,10 +15,8 @@ public class BubbleSortStrategy implements SortStrategy {
             array[j] = array[j + 1];
             array[j + 1] = temp;
         }
-
-
       }
-
     }
+    return NumericArrayWrapper.of(array);
   }
 }

@@ -1,8 +1,7 @@
 package io.github.lolens.service.math.impl;
 
-import io.github.lolens.Main;
 import io.github.lolens.entity.NumericArrayWrapper;
-import io.github.lolens.service.math.MathOperation;
+import io.github.lolens.service.math.MathOperationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,24 +10,24 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
-public class MathOperationService<T extends Number & Comparable<T>> implements MathOperation<T> {
+public class MathOperationServiceImpl implements MathOperationService {
 
-  private static final Logger logger = LoggerFactory.getLogger(MathOperationService.class);
+  private static final Logger logger = LoggerFactory.getLogger(MathOperationServiceImpl.class);
 
   @Override
-  public Optional<T> min(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> Optional<T> min(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
     return Arrays.stream(array).min(Comparator.naturalOrder());
   }
 
   @Override
-  public Optional<T> max(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> Optional<T> max(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
     return Arrays.stream(array).max(Comparator.naturalOrder());
   }
 
   @Override
-  public Optional<Double> sum(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> Optional<Double> sum(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
 
     return Optional.of(
@@ -39,7 +38,7 @@ public class MathOperationService<T extends Number & Comparable<T>> implements M
   }
 
   @Override
-  public Optional<Double> average(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> Optional<Double> average(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
 
     OptionalDouble avg = Arrays.stream(array)

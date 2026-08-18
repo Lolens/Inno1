@@ -1,11 +1,11 @@
-package io.github.lolens.service.sortstrategy.impl;
+package io.github.lolens.service.sort.strategy.impl;
 
 import io.github.lolens.entity.NumericArrayWrapper;
-import io.github.lolens.service.sortstrategy.SortStrategy;
+import io.github.lolens.service.sort.strategy.SortStrategy;
 
 public class InsertionSortStrategy implements SortStrategy {
   @Override
-  public <T extends Number & Comparable<T>> void sort(NumericArrayWrapper<T> arrayWrapper) {
+  public <T extends Number & Comparable<T>> NumericArrayWrapper<T> sort(NumericArrayWrapper<T> arrayWrapper) {
     T[] array = arrayWrapper.getArray();
 
     for (int i = 1; i < array.length; i++) {
@@ -18,5 +18,7 @@ public class InsertionSortStrategy implements SortStrategy {
       }
       array[j + 1] = key;
     }
+    return NumericArrayWrapper.of(array);
   }
+
 }
