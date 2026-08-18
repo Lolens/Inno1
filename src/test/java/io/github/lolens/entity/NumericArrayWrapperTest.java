@@ -10,16 +10,43 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NumericArrayWrapperTest {
 
   private NumericArrayWrapper<Integer> arrayWrapper;
+  private Integer[] arrayContents;
 
   @BeforeEach
   void setUp() {
-    arrayWrapper = NumericArrayWrapper.of(new Integer[]{1, 5, 2, 53, 1242, 1, 25, 1254, 124, 12});
+    arrayContents = new Integer[] {1, 5, 2, 53, 1242, 1, 25, 1254, 124, 12};
+    arrayWrapper = NumericArrayWrapper.of(arrayContents);
   }
 
 
   @Test
   void shouldLengthReturnInnerArrayLength() {
     assertEquals(arrayWrapper.length(), arrayWrapper.getArray().length);
+  }
+
+  @Nested()
+  @DisplayName("Immutability tests")
+  class ImmutabilityTests {
+
+    @Test
+    void shouldWrapperCopyConstructorCopyInnerArray() {
+      NumericArrayWrapper<Integer> copy = new NumericArrayWrapper<>(arrayWrapper);
+      assertNotSame(copy.getArray(), arrayWrapper.getArray());
+    }
+
+    @Test
+    void shouldArrayCopyConstructorCopyInnerArray() {
+      NumericArrayWrapper<Integer> copy = new NumericArrayWrapper<>(arrayContents);
+      assertNotSame(copy.getArray(), arrayWrapper.getArray());
+    }
+
+    @Test
+    void shouldWithValueCreateCopy() {
+      NumericArrayWrapper<Integer> copy = arrayWrapper.withValue(0,10);
+      assertNotEquals(copy.get(0), arrayWrapper.get(0));
+    }
+
+
   }
 
   @Nested()
