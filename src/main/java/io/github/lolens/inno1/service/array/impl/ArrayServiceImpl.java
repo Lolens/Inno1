@@ -1,18 +1,19 @@
 package io.github.lolens.inno1.service.array.impl;
 
 import io.github.lolens.inno1.entity.NumericArrayWrapper;
+import io.github.lolens.inno1.exception.NumericArrayReaderException;
 import io.github.lolens.inno1.parser.NumericArrayParser;
 import io.github.lolens.inno1.reader.NumericArrayReader;
 import io.github.lolens.inno1.repository.arraywrapper.Repository;
+import io.github.lolens.inno1.repository.arraywrapper.specification.Specification;
 import io.github.lolens.inno1.service.array.ArrayService;
 import io.github.lolens.inno1.validator.ArrayDataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -39,24 +40,33 @@ public class ArrayServiceImpl implements ArrayService {
   }
 
   @Override
-  public <T extends Number & Comparable<T>> NumericArrayWrapper<T> createFromFile(
+  public <T extends Number & Comparable<T>> List<NumericArrayWrapper<T>> createFromFile(
       Path filePath, Class<T> clazz, Function<String, T> converter
-  ) throws FileNotFoundException {
-    // reader
+  ) throws NumericArrayReaderException {
+    return createFromFile(filePath, clazz, converter, NumericArrayParser.ParseMode.SINGLE);
+  }
+
+  @Override
+  public <T extends Number & Comparable<T>> List<NumericArrayWrapper<T>> createFromFile(
+      Path filePath, Class<T> clazz, Function<String, T> converter, NumericArrayParser.ParseMode parseMode
+  ) {
     reader.changeFilePath(filePath);
 
-    // validator
     try (Stream<String> stream = reader.stream()) {
       validator.validate(stream);
     }
 
-    // parser
-    T[] rawArray;
+    List<T[]> listOfArrays;
     try (Stream<String> stream = reader.stream()) {
-      rawArray = parser.parse(clazz, stream, converter);
+      listOfArrays = parser.parse(clazz, stream, converter, parseMode);
     }
 
-    return NumericArrayWrapper.Factory.create(rawArray);
+    List<NumericArrayWrapper<T>> result = new LinkedList<>();
+    for (T[] array : listOfArrays) {
+      result.add(NumericArrayWrapper.Factory.create(array));
+    }
+
+    return result;
   }
 
   // Repository
@@ -100,6 +110,18 @@ public class ArrayServiceImpl implements ArrayService {
   @Override
   public List<NumericArrayWrapper<?>> getAll() {
     return repository.findAll();
+  }
+
+  @Override
+  public List<NumericArrayWrapper<?>> getAll(Specification<NumericArrayWrapper<?>> specification) {
+    return repository.findAll(specification);
+  }
+
+  @Override
+  public <T extends Number & Comparable<T>> List<NumericArrayWrapper<T>> getAll(Class<T> clazz, Specification<NumericArrayWrapper<T>> specification) {
+    return getAll(clazz).stream()
+        .filter(specification)
+        .toList();
   }
 
   @Override

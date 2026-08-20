@@ -20,7 +20,7 @@ public class ArrayDataValidatorImpl implements ArrayDataValidator {
    */
   private static final Pattern LINE_PATTERN = Pattern.compile("[0-9]+(\\.[0-9]+)?(,[0-9]+(\\.[0-9]+)?)*");
 
-  private static final Pattern LEADING_ZERO_PATTERN = Pattern.compile("0\\d+");
+  private static final Pattern LEADING_ZERO_PATTERN = Pattern.compile("(?:^|,)0\\d+");
 
   @Override
   public void validate(String line) {
@@ -31,7 +31,7 @@ public class ArrayDataValidatorImpl implements ArrayDataValidator {
 
     Matcher zeroMatcher = LEADING_ZERO_PATTERN.matcher(line);
     if (zeroMatcher.find()) {
-      throw new ArrayDataValidatorException("Number mustn't have leading zeros. Pos: " + zeroMatcher.start());
+      throw new ArrayDataValidatorException("Number mustn't have leading zeros. Pos: " + zeroMatcher.start() + "| line: " + line);
     }
   }
 

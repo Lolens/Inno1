@@ -1,8 +1,10 @@
 package io.github.lolens.inno1.service.array;
 
 import io.github.lolens.inno1.entity.NumericArrayWrapper;
+import io.github.lolens.inno1.exception.NumericArrayReaderException;
+import io.github.lolens.inno1.parser.NumericArrayParser;
+import io.github.lolens.inno1.repository.arraywrapper.specification.Specification;
 
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +12,18 @@ import java.util.function.Function;
 
 public interface ArrayService {
 
-  <T extends Number & Comparable<T>> NumericArrayWrapper<T> createFromFile(
+  <T extends Number & Comparable<T>> List<NumericArrayWrapper<T>> createFromFile(
       Path filePath,
       Class<T> clazz,
       Function<String, T> converter
-  ) throws FileNotFoundException;
+  ) throws NumericArrayReaderException;
+
+  <T extends Number & Comparable<T>> List<NumericArrayWrapper<T>> createFromFile(
+      Path filePath,
+      Class<T> clazz,
+      Function<String, T> converter,
+      NumericArrayParser.ParseMode parseMode
+  ) throws NumericArrayReaderException;
 
   <T extends Number & Comparable<T>> NumericArrayWrapper<?> persist(NumericArrayWrapper<T> arrayWrapper);
 
@@ -27,6 +36,10 @@ public interface ArrayService {
   List<NumericArrayWrapper<?>> getAll();
 
   <T extends Number & Comparable<T>> List<NumericArrayWrapper<T>> getAll(Class<T> clazz);
+
+  List<NumericArrayWrapper<?>> getAll(Specification<NumericArrayWrapper<?>> specification);
+
+  <T extends Number & Comparable<T>> List<NumericArrayWrapper<T>> getAll(Class<T> clazz, Specification<NumericArrayWrapper<T>> specification);
 
   boolean isExists(long id);
 

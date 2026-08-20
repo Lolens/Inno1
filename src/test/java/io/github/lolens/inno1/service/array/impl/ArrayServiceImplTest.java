@@ -13,7 +13,10 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
+import static io.github.lolens.inno1.parser.NumericArrayParser.ParseMode.LIMITED_BY_LINE;
+import static io.github.lolens.inno1.parser.NumericArrayParser.ParseMode.SINGLE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ArrayServiceImplTest {
@@ -31,9 +34,24 @@ public class ArrayServiceImplTest {
     Path inputPath = tempDir.resolve("input.txt");
     Files.writeString(inputPath, "1,2,3");
 
-    NumericArrayWrapper<Integer> wrapper = arrayCreationService.createFromFile(inputPath, Integer.class, Integer::parseInt);
+    List<NumericArrayWrapper<Integer>> wrapper = arrayCreationService.createFromFile(inputPath, Integer.class, Integer::parseInt, SINGLE);
 
-    assertArrayEquals(new int[]{1, 2, 3}, wrapper.getIntArray());
+    assertArrayEquals(new int[]{1, 2, 3}, wrapper.getFirst().getIntArray());
+  }
+
+  @Test
+  void shouldCreateArrayWithValidDataLimitedByLine(@TempDir Path tempDir) throws IOException {
+    Path inputPath = tempDir.resolve("input.txt");
+    Files.writeString(inputPath, "1,2,3\n4,5,6\n11,21,31\n14,24,34");
+
+    List<NumericArrayWrapper<Integer>> wrapper = arrayCreationService.createFromFile(inputPath, Integer.class, Integer::parseInt, LIMITED_BY_LINE);
+
+    System.out.println(wrapper);
+
+    assertArrayEquals(new int[]{1, 2, 3}, wrapper.get(0).getIntArray());
+    assertArrayEquals(new int[]{4, 5, 6}, wrapper.get(1).getIntArray());
+    assertArrayEquals(new int[]{11, 21, 31}, wrapper.get(2).getIntArray());
+    assertArrayEquals(new int[]{14, 24, 34}, wrapper.get(3).getIntArray());
   }
 
 }

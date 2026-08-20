@@ -1,5 +1,7 @@
 package io.github.lolens.inno1.repository.arraywrapper;
 
+import io.github.lolens.inno1.repository.arraywrapper.specification.Specification;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +13,8 @@ public interface Repository<K, V> {
   boolean exists(K id);
 
   Optional<V> findById(K id);
+
   List<V> findAll();
+  List<V> findAll(Specification<V> specification);
 
 }
