@@ -1,7 +1,7 @@
-package io.github.lolens.inno1.repository.arraywrapper.specification.impl;
+package io.github.lolens.inno1.repository.arraywrapper.impl.specification;
 
 import io.github.lolens.inno1.entity.NumericArrayWrapper;
-import io.github.lolens.inno1.repository.arraywrapper.specification.Specification;
+import io.github.lolens.inno1.repository.specification.Specification;
 
 public class IdentifierSpecification implements Specification<NumericArrayWrapper<?>> {
 

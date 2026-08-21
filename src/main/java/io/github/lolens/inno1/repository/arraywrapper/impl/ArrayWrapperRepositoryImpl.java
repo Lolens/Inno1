@@ -2,8 +2,8 @@ package io.github.lolens.inno1.repository.arraywrapper.impl;
 
 import io.github.lolens.inno1.entity.NumericArrayWrapper;
 import io.github.lolens.inno1.listener.RepositoryListener;
-import io.github.lolens.inno1.repository.arraywrapper.Repository;
-import io.github.lolens.inno1.repository.arraywrapper.specification.Specification;
+import io.github.lolens.inno1.repository.Repository;
+import io.github.lolens.inno1.repository.specification.Specification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

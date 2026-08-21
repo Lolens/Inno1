@@ -1,9 +1,9 @@
-package io.github.lolens.inno1.repository.arraywrapper.specification.impl;
+package io.github.lolens.inno1.repository.arraywrapper.impl.specification;
 
 import io.github.lolens.inno1.entity.NumericArrayWrapper;
-import io.github.lolens.inno1.repository.arraywrapper.specification.Specification;
-import io.github.lolens.inno1.repository.arraywrapper.specification.impl.aggregate.AggregateFunction;
-import io.github.lolens.inno1.repository.arraywrapper.specification.impl.aggregate.ComparisonOperator;
+import io.github.lolens.inno1.repository.specification.Specification;
+import io.github.lolens.inno1.repository.specification.impl.AggregateFunction;
+import io.github.lolens.inno1.repository.specification.impl.ComparisonOperator;
 
 public class AggregateSpecification implements Specification<NumericArrayWrapper<?>> {
 

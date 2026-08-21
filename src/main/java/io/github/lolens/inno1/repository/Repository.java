@@ -1,6 +1,6 @@
-package io.github.lolens.inno1.repository.arraywrapper;
+package io.github.lolens.inno1.repository;
 
-import io.github.lolens.inno1.repository.arraywrapper.specification.Specification;
+import io.github.lolens.inno1.repository.specification.Specification;
 
 import java.util.List;
 import java.util.Optional;

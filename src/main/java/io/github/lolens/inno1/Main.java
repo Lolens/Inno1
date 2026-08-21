@@ -5,7 +5,7 @@ import io.github.lolens.inno1.listener.RepositoryListener;
 import io.github.lolens.inno1.parser.NumericArrayParser;
 import io.github.lolens.inno1.reader.NumericArrayReader;
 import io.github.lolens.inno1.repository.arraywrapper.impl.ArrayWrapperRepositoryImpl;
-import io.github.lolens.inno1.repository.arraywrapper.specification.impl.TypeSpecification;
+import io.github.lolens.inno1.repository.arraywrapper.impl.specification.TypeSpecification;
 import io.github.lolens.inno1.service.array.impl.ArrayServiceImpl;
 import io.github.lolens.inno1.service.math.MathOperationService;
 import io.github.lolens.inno1.service.math.impl.MathOperationServiceImpl;

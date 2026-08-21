@@ -3,7 +3,7 @@ package io.github.lolens.inno1.service.array.impl;
 import io.github.lolens.inno1.entity.NumericArrayWrapper;
 import io.github.lolens.inno1.parser.NumericArrayParser;
 import io.github.lolens.inno1.reader.NumericArrayReader;
-import io.github.lolens.inno1.repository.arraywrapper.Repository;
+import io.github.lolens.inno1.repository.Repository;
 import io.github.lolens.inno1.repository.arraywrapper.impl.ArrayWrapperRepositoryImpl;
 import io.github.lolens.inno1.validator.ArrayDataValidator;
 import io.github.lolens.inno1.validator.impl.ArrayDataValidatorImpl;

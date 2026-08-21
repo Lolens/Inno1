@@ -3,7 +3,7 @@ package io.github.lolens.inno1.service.array;
 import io.github.lolens.inno1.entity.NumericArrayWrapper;
 import io.github.lolens.inno1.exception.NumericArrayReaderException;
 import io.github.lolens.inno1.parser.NumericArrayParser;
-import io.github.lolens.inno1.repository.arraywrapper.specification.Specification;
+import io.github.lolens.inno1.repository.specification.Specification;
 
 import java.nio.file.Path;
 import java.util.List;

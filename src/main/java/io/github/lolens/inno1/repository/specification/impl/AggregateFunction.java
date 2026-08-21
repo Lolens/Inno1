@@ -1,4 +1,4 @@
-package io.github.lolens.inno1.repository.arraywrapper.specification.impl.aggregate;
+package io.github.lolens.inno1.repository.specification.impl;
 
 import java.util.Arrays;
 
